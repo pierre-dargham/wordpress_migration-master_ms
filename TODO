@@ -1,0 +1,60 @@
+TODO - 06 Aout 2014
+
+Author : Pierre Dargham
+Mail : pierre.dargham@gmail.com
+
+
+--------------------------------------------------------------------------------
+1. Bugfix : paths serveur
+
+Si le nom de domain est aussi dans le path serveur, le remplacement casse le path serveur
+
+exemple :
+
+domain = cdp.ite.4me.be
+new_domain = gremille.globalis-dev.com
+
+path_server = /sites/cdp.ite.4me.be/
+new_path_server = /local/apache/htdocs/
+
+les nouveaux path après execution du script seront :
+/sites/gremille.globalis-dev.com/
+alors qu'ils devraient être
+/local/apache/htdocs/
+
+--> Solution :
+
+Découper la fonction update en 2 :
+
+function update( ... ) {
+	update_path( ... );
+	update_domain( ... );
+}
+
+Si l'update path a lieu AVANT l'update domain, il n'y aura plus de problème
+
+-----------------------------------------------------------------------------
+
+
+2. Sous-domaines -> Sous-repertoires et Sous-repertoires -> Sous-domaines
+
+2.1 VIEW : Ajouter des cases à cocher :
+
+Site d'origine
+   [] multisite sous-domaines
+   [] multisite sous-repertoires
+
+Nouveau site
+   [] multisite sous-domaines
+   [] multisite sous-repertoires
+
+2.1 CODE : 
+
+	SI Sous-domaines -> Sous-domaines OU Sous-repertoires -> Sous-repertoires
+	   rien de plus à faire
+
+	SI Sous-domaines -> Sous-repertoires
+	   {sous-domaine}.domain.com doit devenir domain.com/{sous-domaine}
+
+	SI Sous-repertoires -> Sous-domaines
+	   domain.com/{sous-domaine} doit devenir {sous-domaine}.domain.com
